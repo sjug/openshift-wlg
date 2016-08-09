@@ -1,0 +1,108 @@
+{
+    "apiVersion": "v1",
+    "kind": "Template",
+    "metadata": {
+        "name": "alpine-stress-template"
+    },
+    "objects": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "generateName": "alpine-stress-",
+                "labels": {
+                    "deployment": "alpine-stress",
+                    "deploymentconfig": "alpine-stress",
+                    "run": "alpine-stress"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "RUN",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "to.run",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "STRESS_CPU",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "stress.cpu",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "STRESS_TIME",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "stress.time",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "TARGET_IP",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "jmeter.ip",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "TARGET_PORT",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "jmeter.port",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "ROUTER_IP",
+                                "valueFrom": {
+                                    "configMapKeyRef": {
+                                        "key": "router.ip",
+                                        "name": "stress-config"
+                                    }
+                                }
+                            }
+                        ],
+                        "image": "sjug/alpine-stress:latest",
+                        "imagePullPolicy": "Always",
+                        "name": "alpine-stress",
+                        "resources": {},
+                        "securityContext": {
+                            "capabilities": {
+                                "drop": [
+                                    "KILL",
+                                    "MKNOD",
+                                    "SETGID",
+                                    "SETUID",
+                                    "SYS_CHROOT"
+                                ]
+                            },
+                            "privileged": false,
+                            "seLinuxOptions": {
+                                "level": "s0:c9,c4"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log"
+                    }
+                ],
+                "imagePullSecrets": [
+                    {
+                        "name": "default-dockercfg-ukomu"
+                    }
+                ]
+            }
+        }
+    ]
+}
